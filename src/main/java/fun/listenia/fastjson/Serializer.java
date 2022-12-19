@@ -51,11 +51,11 @@ public class Serializer {
         this.putValue(key, json);
     }
 
-    public void start () {
+    protected void start() {
         this.sb.append('{');
     }
 
-    public void end () {
+    protected void end() {
         this.sb.append('}');
     }
 

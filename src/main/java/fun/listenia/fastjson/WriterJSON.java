@@ -10,29 +10,15 @@ public class WriterJSON {
         writeObject(sb, map);
         return sb.toString();
     }
-    static void writeObject(StringBuilder sb, Map<String, Object> map) {
+    protected static void writeObject (StringBuilder sb, Map<String, Object> map) {
         sb.append('{');
-
-        int len = map.size();
-        int iters = 0;
-
+        boolean first = true;
         for (Map.Entry<String, Object> entry : map.entrySet()) {
-            Object value = entry.getValue();
-
-            sb.append('"');
-            Utils.writeSafeString(sb, entry.getKey());
-            sb.append('"');
-            sb.append(':');
-
-            Utils.writeRawValue(sb, value);
-            // value
-
-            iters++;
-            if (iters != len) {
+            if (!first)
                 sb.append(',');
-            }
+            first = false;
+            Utils.writeKeyValue(sb, entry.getKey(), entry.getValue());
         }
-
         sb.append('}');
     }
 
@@ -51,28 +37,24 @@ public class WriterJSON {
 
     static void writeList (StringBuilder sb, Collection<Object> list) {
         sb.append('[');
-        int len = list.size();
-        int iters = 0;
+        boolean first = true;
         for (Object value : list) {
-            Utils.writeRawValue(sb, value);
-            iters++;
-            if (iters != len) {
+            if (!first)
                 sb.append(',');
-            }
+            first = false;
+            Utils.writeRawValue(sb, value);
         }
         sb.append(']');
     }
 
-    static void writeArray(StringBuilder sb, Object[] list) {
+    static void writeArray (StringBuilder sb, Object[] list) {
         sb.append('[');
-        int len = list.length;
-        int iters = 0;
+        boolean first = true;
         for (Object value : list) {
-            Utils.writeRawValue(sb, value);
-            iters++;
-            if (iters != len) {
+            if (!first)
                 sb.append(',');
-            }
+            first = false;
+            Utils.writeRawValue(sb, value);
         }
         sb.append(']');
     }
