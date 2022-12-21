@@ -1,3 +1,5 @@
+package writing;
+
 import fun.listenia.fastjson.WriterJSON;
 import org.json.JSONObject;
 

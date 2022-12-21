@@ -1,10 +1,12 @@
-import fun.listenia.fastjson.Serializer;
+package writing;
+
+import fun.listenia.fastjson.extra.Serializer;
 import org.json.JSONObject;
 
 public class HardwriteBench {
 
     public static void main(String[] args) {
-        int iters = 10_000_000;
+        int iters = 1_000_000;
 
         long start = System.currentTimeMillis();
         for (int i = 0; i < iters; i++) {

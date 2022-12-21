@@ -1,5 +1,7 @@
 package fun.listenia.fastjson;
 
+import fun.listenia.fastjson.extra.Serializer;
+
 import java.util.List;
 import java.util.Map;
 

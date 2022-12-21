@@ -1,4 +1,7 @@
-package fun.listenia.fastjson;
+package fun.listenia.fastjson.extra;
+
+import fun.listenia.fastjson.JSONSerializable;
+import fun.listenia.fastjson.Utils;
 
 public class Serializer {
 
@@ -51,11 +54,11 @@ public class Serializer {
         this.putValue(key, json);
     }
 
-    protected void start() {
+    public void start() {
         this.sb.append('{');
     }
 
-    protected void end() {
+    public void end() {
         this.sb.append('}');
     }
 

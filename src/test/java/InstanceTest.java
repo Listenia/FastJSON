@@ -1,6 +1,5 @@
 import exemple.Hello;
 import exemple.SubHello;
-import fun.listenia.fastjson.Serializer;
 
 public class InstanceTest {
 

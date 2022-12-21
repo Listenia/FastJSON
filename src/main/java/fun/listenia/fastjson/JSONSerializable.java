@@ -1,8 +1,10 @@
 package fun.listenia.fastjson;
 
+import fun.listenia.fastjson.extra.Serializer;
+
 public abstract class JSONSerializable {
 
-    protected abstract void serialize (Serializer serializer);
+    public abstract void serialize(Serializer serializer);
     // public abstract void serialize (String json);
 
 

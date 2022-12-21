@@ -1,7 +1,7 @@
 package exemple;
 
 import fun.listenia.fastjson.JSONSerializable;
-import fun.listenia.fastjson.Serializer;
+import fun.listenia.fastjson.extra.Serializer;
 
 public class Hello extends JSONSerializable {
 
