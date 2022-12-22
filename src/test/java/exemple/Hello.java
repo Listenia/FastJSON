@@ -1,6 +1,7 @@
 package exemple;
 
 import fun.listenia.fastjson.JSONSerializable;
+import fun.listenia.fastjson.extra.ObjectSerializer;
 import fun.listenia.fastjson.extra.Serializer;
 
 public class Hello extends JSONSerializable {
@@ -21,7 +22,7 @@ public class Hello extends JSONSerializable {
 
 
     @Override
-    public void serialize (Serializer serializer) {
+    public void serialize (ObjectSerializer serializer) {
         serializer.put("state", state);
         serializer.put("message", message);
         serializer.put("subHello", subHello);

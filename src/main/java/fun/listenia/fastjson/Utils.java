@@ -7,15 +7,25 @@ import java.util.Map;
 
 public class Utils {
 
+    protected static void requireChar (char c, char expected) {
+        if (c != expected)
+            throw new IllegalArgumentException("Invalid JSON object");
+    }
+
     public static void writeSafeString (StringBuilder sb, String str) {
         final char slash = '\\';
         final char quote = '"';
+        boolean hasSlash = false;
 
         for (char c : str.toCharArray()) {
             if (c == slash) {
                 sb.append(slash);
-                sb.append(slash);
+                hasSlash = !hasSlash;
             } else if (c == quote) {
+                if (hasSlash) {
+                    sb.append(slash);
+                    hasSlash = false;
+                }
                 sb.append(slash);
                 sb.append(quote);
             } else {
@@ -41,8 +51,12 @@ public class Utils {
         } else if (value == null) {
             sb.append("null");
         } else if (value instanceof JSONSerializable) {
-            Serializer serializer = Serializer.createSerializer(sb);
+            Serializer serializer = Serializer.createObject(sb);
             Serializer.serialize((JSONSerializable) value, serializer);
+        } else if (value instanceof Serializer) {
+            sb.append(value);
+        } else {
+            throw new IllegalArgumentException("Invalid JSON object");
         }
     }
 
@@ -52,6 +66,58 @@ public class Utils {
         sb.append('"');
         sb.append(':');
         Utils.writeRawValue(sb, value);
+    }
+
+    public static String readString (char[] chars, AccessibleInteger index) {
+        int localIndex = index.get();
+        requireChar(chars[localIndex++], '"');
+        StringBuilder sb = new StringBuilder();
+        boolean escape = false;
+        while (true) {
+            char c = chars[localIndex++];
+            if (escape) {
+                escape = false;
+                sb.append(c);
+            } else if (c == '\\') {
+                escape = true;
+            } else if (c == '"') {
+                break;
+            } else {
+                sb.append(c);
+            }
+        }
+        index.set(localIndex);
+        return sb.toString();
+    }
+
+    public static Number readNumber (char[] chars, AccessibleInteger index) {
+        double value = 0;
+        int dividor = 1;
+
+        int localIndex = index.get();
+        while (true) {
+            int diff = chars[localIndex] - '0';
+            if (diff == -2) // is '.'
+                dividor = 10;
+            else if (diff <= 9 && diff >= 0) { // is number
+                if (dividor == 1) {
+                    value = value * 10 + diff;
+                } else {
+                    value += diff / (double) dividor;
+                    dividor *= 10;
+                }
+            } else { // is other
+                break;
+            }
+            localIndex++;
+        }
+
+        index.set(localIndex);
+        if (dividor == 1) {
+            return (int) value;
+        } else {
+            return value;
+        }
     }
 
 }

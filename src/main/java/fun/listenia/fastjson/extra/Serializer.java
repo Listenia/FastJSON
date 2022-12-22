@@ -3,67 +3,56 @@ package fun.listenia.fastjson.extra;
 import fun.listenia.fastjson.JSONSerializable;
 import fun.listenia.fastjson.Utils;
 
+import java.util.List;
+
 public class Serializer {
 
-    public static Serializer createSerializer (StringBuilder sb) {
-        return new Serializer(sb);
+    public static ObjectSerializer createObject () {
+        return new ObjectSerializer();
+    }
+    public static ObjectSerializer createObject (StringBuilder sb) {
+        return new ObjectSerializer(sb);
     }
 
-    public static Serializer createSerializer () {
-        StringBuilder sb = new StringBuilder();
-        return new Serializer(sb);
+    public static ArraySerializer createArray () {
+        return new ArraySerializer();
+    }
+    public static ArraySerializer createArray (StringBuilder sb) {
+        return new ArraySerializer(sb);
     }
 
     public static void serialize (JSONSerializable obj, Serializer serializer) {
-        serializer.start();
-        obj.serialize(serializer);
-        serializer.end();
+        serializer._start();
+        obj.serialize((ObjectSerializer) serializer);
+        serializer._end();
     }
 
-    private final StringBuilder sb;
-    private boolean addComa;
+    protected final StringBuilder sb;
+    protected boolean addComa;
 
-    protected Serializer (StringBuilder sb) {
+    private final Type type;
+
+    protected Serializer (StringBuilder sb, Type type) {
         this.sb = sb;
+        this.type = type;
     }
 
-    private void putValue (String key, Object value) {
-        if (addComa)
-            sb.append(',');
-        addComa = true;
-        Utils.writeKeyValue(sb, key, value);
-    }
 
-    public void put (String key, Object[] value) {
-        this.putValue(key, value);
-    }
 
-    public void put (String key, String value) {
-        this.putValue(key, value);
-    }
 
-    public void put (String key, Number value) {
-        this.putValue(key, value);
-    }
 
-    public void put (String key, boolean value) {
-        this.putValue(key, value);
-    }
-
-    public void put (String key, JSONSerializable json) {
-        this.putValue(key, json);
-    }
-
-    public void start() {
+    private void _start() {
         this.sb.append('{');
     }
 
-    public void end() {
+    private void _end() {
         this.sb.append('}');
     }
 
     public String toString () {
-        return "{" + this.sb + "}";
+        if (type == Type.OBJECT)
+            return "{" + this.sb + "}";
+        return "[" + this.sb + "]";
     }
 
 }

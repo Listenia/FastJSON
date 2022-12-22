@@ -1,4 +1,4 @@
-package reading;
+package all;
 
 import fun.listenia.fastjson.ReaderJSON;
 import org.json.JSONArray;
@@ -7,8 +7,14 @@ import writing.WritingTest;
 
 import java.util.Map;
 
-public class HardreadBench {
-    public static void main(String[] args) {
+public class HardBench {
+    public static void main(String[] args) throws InterruptedException {
+
+        Thread.sleep(1_000);
+        for (int i = 0; i < 100_000; i++) {
+            legacy();
+            evol();
+        }
 
         int iters = 1_000_000;
 
@@ -28,17 +34,39 @@ public class HardreadBench {
         long end2 = System.currentTimeMillis();
         System.out.println("Evol: " + (end2-start2));
 
-        double diff = ((double) end-start) / (end2-start2);
-        System.out.println("Diff: " + diff);
 
+
+        long start3 = System.currentTimeMillis();
+        for (int i = 0; i < iters; i++) {
+            evol();
+        }
+        long end3 = System.currentTimeMillis();
+        System.out.println("Evol hard: " + (end3-start3));
+
+
+        System.out.println("--");
+
+        double diffEvol = ((double) end-start) / (end2-start2);
+        System.out.println("Diff: " + diffEvol);
+
+        double diffEvolHard = ((double) end-start) / (end3-start3);
+        System.out.println("Diff hard: " + diffEvolHard);
+
+        System.out.println("--");
         System.out.println("Legacy: " + legacy());
         System.out.println("Evol: " + evol());
+        System.out.println("EvolHard: " + evolHard());
 
 
     }
 
     public static Map<String, Object> evol () {
-        String json = WritingTest.value();
+        String json = WritingTest.evol();
+        return ReaderJSON.readRawObject(json);
+    }
+
+    public static Map<String, Object> evolHard () {
+        String json = WritingTest.evolHard();
         return ReaderJSON.readRawObject(json);
     }
 
