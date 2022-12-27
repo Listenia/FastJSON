@@ -1,5 +1,7 @@
 package fun.listenia.fastjson;
 
+import fun.listenia.fastjson.extra.serialize.SourceOutput;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -7,56 +9,56 @@ public class WriterJSON {
 
     public static String writeObject (Map<String, Object> map) {
         StringBuilder sb = new StringBuilder();
-        writeObject(sb, map);
+        writeObject(new SourceOutput(sb), map);
         return sb.toString();
     }
-    protected static void writeObject (StringBuilder sb, Map<String, Object> map) {
-        sb.append('{');
+    protected static void writeObject (SourceOutput source, Map<String, Object> map) {
+        source.write('{');
         boolean first = true;
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             if (!first)
-                sb.append(',');
+                source.write(',');
             first = false;
-            Utils.writeKeyValue(sb, entry.getKey(), entry.getValue());
+            Utils.writeKeyValue(source, entry.getKey(), entry.getValue());
         }
-        sb.append('}');
+        source.write('}');
     }
 
 
     public static String writeList (Collection<Object> list) {
         StringBuilder sb = new StringBuilder();
-        writeList(sb, list);
+        writeList(new SourceOutput(sb), list);
         return sb.toString();
     }
 
     public static String writeArray (Object[] list) {
         StringBuilder sb = new StringBuilder();
-        writeArray(sb, list);
+        writeArray(new SourceOutput(sb), list);
         return sb.toString();
     }
 
-    static void writeList (StringBuilder sb, Collection<Object> list) {
-        sb.append('[');
+    static void writeList (SourceOutput source, Collection<Object> list) {
+        source.write('[');
         boolean first = true;
         for (Object value : list) {
             if (!first)
-                sb.append(',');
+                source.write(',');
             first = false;
-            Utils.writeRawValue(sb, value);
+            Utils.writeRawValue(source, value);
         }
-        sb.append(']');
+        source.write(']');
     }
 
-    static void writeArray (StringBuilder sb, Object[] list) {
-        sb.append('[');
+    static void writeArray (SourceOutput source, Object[] list) {
+        source.write('[');
         boolean first = true;
         for (Object value : list) {
             if (!first)
-                sb.append(',');
+                source.write(',');
             first = false;
-            Utils.writeRawValue(sb, value);
+            Utils.writeRawValue(source, value);
         }
-        sb.append(']');
+        source.write(']');
     }
 
 }

@@ -7,19 +7,15 @@ import java.util.List;
 
 public class ObjectSerializer extends Serializer {
 
-    public ObjectSerializer (StringBuilder sb) {
-        super(sb, Type.OBJECT);
-    }
-
-    public ObjectSerializer () {
-        super(new StringBuilder(), Type.OBJECT);
+    public ObjectSerializer (SourceOutput source) {
+        super(source, Type.OBJECT);
     }
 
     private void putValue (String key, Object value) {
         if (addComa)
-            sb.append(',');
+            source.write(',');
         addComa = true;
-        Utils.writeKeyValue(sb, key, value);
+        Utils.writeKeyValue(source, key, value);
     }
 
     public void put (String key, Object[] value) {

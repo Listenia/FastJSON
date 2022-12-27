@@ -5,17 +5,18 @@ import fun.listenia.fastjson.extra.Type;
 public class Serializer {
 
     public static ObjectSerializer createObject () {
-        return new ObjectSerializer();
+        return new ObjectSerializer(new SourceOutput(new StringBuilder()));
     }
-    public static ObjectSerializer createObject (StringBuilder sb) {
-        return new ObjectSerializer(sb);
+    public static ObjectSerializer createObject (SourceOutput source) {
+        return new ObjectSerializer(source);
     }
 
     public static ArraySerializer createArray () {
-        return new ArraySerializer();
+        return new ArraySerializer(new SourceOutput(new StringBuilder()));
     }
-    public static ArraySerializer createArray (StringBuilder sb) {
-        return new ArraySerializer(sb);
+
+    public static ArraySerializer createArray (SourceOutput source) {
+        return new ArraySerializer(source);
     }
 
     public static void serialize (JSONSerializable obj, Serializer serializer) {
@@ -24,13 +25,13 @@ public class Serializer {
         serializer._end();
     }
 
-    protected final StringBuilder sb;
+    protected final SourceOutput source;
     protected boolean addComa;
 
     private final Type type;
 
-    protected Serializer (StringBuilder sb, Type type) {
-        this.sb = sb;
+    protected Serializer (SourceOutput source, Type type) {
+        this.source = source;
         this.type = type;
     }
 
@@ -39,17 +40,17 @@ public class Serializer {
 
 
     private void _start() {
-        this.sb.append('{');
+        this.source.write('{');
     }
 
     private void _end() {
-        this.sb.append('}');
+        this.source.write('}');
     }
 
     public String toString () {
         if (type == Type.OBJECT)
-            return "{" + this.sb + "}";
-        return "[" + this.sb + "]";
+            return "{" + this.source.toString() + "}";
+        return "[" + this.source.toString() + "]";
     }
 
 }

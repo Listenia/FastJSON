@@ -7,19 +7,15 @@ import java.util.List;
 
 public class ArraySerializer extends Serializer {
 
-    public ArraySerializer (StringBuilder sb) {
-        super(sb, Type.ARRAY);
-    }
-
-    public ArraySerializer () {
-        super(new StringBuilder(), Type.ARRAY);
+    public ArraySerializer (SourceOutput source) {
+        super(source, Type.ARRAY);
     }
 
     private void addValue (Object value) {
         if (addComa)
-            sb.append(',');
+            source.write(',');
         addComa = true;
-        Utils.writeRawValue(sb, value);
+        Utils.writeRawValue(source, value);
     }
 
     public void add (Object[] value) {

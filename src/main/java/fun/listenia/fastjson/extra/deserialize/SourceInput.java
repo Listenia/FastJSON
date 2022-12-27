@@ -22,6 +22,10 @@ public class SourceInput {
         this.source = source;
     }
 
+    public SourceInput (InputStream source) {
+        this.source = source;
+    }
+
     public char next () {
         if (future != 0) {
             last = future;

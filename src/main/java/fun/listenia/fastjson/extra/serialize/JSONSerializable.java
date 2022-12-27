@@ -10,7 +10,8 @@ public abstract class JSONSerializable {
 
     @Override
     public String toString() {
-        Serializer ser = Serializer.createObject();
+        StringBuilder sb = new StringBuilder();
+        Serializer ser = Serializer.createObject(new SourceOutput(sb));
         return ser.toString();
     }
 }

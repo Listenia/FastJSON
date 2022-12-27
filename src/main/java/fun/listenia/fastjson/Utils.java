@@ -3,7 +3,9 @@ package fun.listenia.fastjson;
 import fun.listenia.fastjson.extra.deserialize.SourceInput;
 import fun.listenia.fastjson.extra.serialize.JSONSerializable;
 import fun.listenia.fastjson.extra.serialize.Serializer;
+import fun.listenia.fastjson.extra.serialize.SourceOutput;
 
+import javax.xml.transform.Source;
 import java.util.List;
 import java.util.Map;
 
@@ -14,60 +16,60 @@ public class Utils {
             throw new IllegalArgumentException("Invalid JSON object");
     }
 
-    public static void writeSafeString (StringBuilder sb, String str) {
+    public static void writeSafeString (SourceOutput source, String str) {
         final char slash = '\\';
         final char quote = '"';
         boolean hasSlash = false;
 
         for (char c : str.toCharArray()) {
             if (c == slash) {
-                sb.append(slash);
+                source.write(slash);
                 hasSlash = !hasSlash;
             } else if (c == quote) {
                 if (hasSlash) {
-                    sb.append(slash);
+                    source.write(slash);
                     hasSlash = false;
                 }
-                sb.append(slash);
-                sb.append(quote);
+                source.write(slash);
+                source.write(quote);
             } else {
-                sb.append(c);
+                source.write(c);
             }
         }
     }
-    public static void writeRawValue (StringBuilder sb, Object value) {
+    public static void writeRawValue (SourceOutput source, Object value) {
         if (value instanceof Number) {
-            sb.append(value);
+            writeNumber(source, (Number) value);
         } else if (value instanceof Boolean) {
-            sb.append(((boolean) value) ? "true" : "false");
+            writeString(source, ((boolean) value) ? "true" : "false");
         } else if (value instanceof String) {
-            sb.append('"');
-            writeSafeString(sb, (String) value);
-            sb.append('"');
+            source.write('"');
+            writeSafeString(source, (String) value);
+            source.write('"');
         } else if (value instanceof Map) {
-            WriterJSON.writeObject(sb, (Map<String, Object>) value);
+            WriterJSON.writeObject(source, (Map<String, Object>) value);
         } else if (value instanceof List) {
-            WriterJSON.writeList(sb, (List) value);
+            WriterJSON.writeList(source, (List) value);
         } else if (value instanceof Object[]) {
-            WriterJSON.writeArray(sb, (Object[]) value);
+            WriterJSON.writeArray(source, (Object[]) value);
         } else if (value == null) {
-            sb.append("null");
+            writeString(source, "null");
         } else if (value instanceof JSONSerializable) {
-            Serializer serializer = Serializer.createObject(sb);
+            Serializer serializer = Serializer.createObject(source);
             Serializer.serialize((JSONSerializable) value, serializer);
         } else if (value instanceof Serializer) {
-            sb.append(value);
+            writeString(source, value.toString());
         } else {
             throw new IllegalArgumentException("Invalid JSON object");
         }
     }
 
-    public static void writeKeyValue (StringBuilder sb, String key, Object value) {
-        sb.append('"');
-        Utils.writeSafeString(sb, key);
-        sb.append('"');
-        sb.append(':');
-        Utils.writeRawValue(sb, value);
+    public static void writeKeyValue (SourceOutput source, String key, Object value) {
+        source.write('"');
+        Utils.writeSafeString(source, key);
+        source.write('"');
+        source.write(':');
+        Utils.writeRawValue(source, value);
     }
 
     public static String readString (SourceInput source) {
@@ -88,6 +90,12 @@ public class Utils {
             }
         }
         return sb.toString();
+    }
+
+    public static void writeString (SourceOutput source, String str) {
+        for (char c : str.toCharArray()) {
+            source.write(c);
+        }
     }
 
     public static Number readNumber (SourceInput source) {
@@ -117,6 +125,14 @@ public class Utils {
         } else {
             return value;
         }
+    }
+
+    public static void writeNumber (SourceOutput source, Number number) {
+        if (number instanceof Double || number instanceof Float) {
+            writeString(source, Double.toString(number.doubleValue()));
+            return;
+        }
+        writeString(source, Long.toString(number.longValue()));
     }
 
 }
