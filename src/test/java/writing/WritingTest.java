@@ -1,10 +1,9 @@
 package writing;
 
 import fun.listenia.fastjson.WriterJSON;
-import fun.listenia.fastjson.extra.ArraySerializer;
-import fun.listenia.fastjson.extra.ObjectSerializer;
-import fun.listenia.fastjson.extra.Serializer;
-import fun.listenia.fastjson.extra.Type;
+import fun.listenia.fastjson.extra.serialize.ArraySerializer;
+import fun.listenia.fastjson.extra.serialize.ObjectSerializer;
+import fun.listenia.fastjson.extra.serialize.Serializer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

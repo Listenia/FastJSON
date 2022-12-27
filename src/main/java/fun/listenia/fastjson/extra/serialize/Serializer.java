@@ -1,9 +1,6 @@
-package fun.listenia.fastjson.extra;
+package fun.listenia.fastjson.extra.serialize;
 
-import fun.listenia.fastjson.JSONSerializable;
-import fun.listenia.fastjson.Utils;
-
-import java.util.List;
+import fun.listenia.fastjson.extra.Type;
 
 public class Serializer {
 

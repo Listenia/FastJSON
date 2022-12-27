@@ -1,13 +1,15 @@
 package fun.listenia.fastjson;
 
-import fun.listenia.fastjson.extra.Serializer;
+import fun.listenia.fastjson.extra.deserialize.SourceInput;
+import fun.listenia.fastjson.extra.serialize.JSONSerializable;
+import fun.listenia.fastjson.extra.serialize.Serializer;
 
 import java.util.List;
 import java.util.Map;
 
 public class Utils {
 
-    protected static void requireChar (char c, char expected) {
+    public static void requireChar(char c, char expected) {
         if (c != expected)
             throw new IllegalArgumentException("Invalid JSON object");
     }
@@ -68,13 +70,12 @@ public class Utils {
         Utils.writeRawValue(sb, value);
     }
 
-    public static String readString (char[] chars, AccessibleInteger index) {
-        int localIndex = index.get();
-        requireChar(chars[localIndex++], '"');
+    public static String readString (SourceInput source) {
+        requireChar(source.get(), '"');
         StringBuilder sb = new StringBuilder();
         boolean escape = false;
         while (true) {
-            char c = chars[localIndex++];
+            char c = source.next();
             if (escape) {
                 escape = false;
                 sb.append(c);
@@ -86,17 +87,16 @@ public class Utils {
                 sb.append(c);
             }
         }
-        index.set(localIndex);
         return sb.toString();
     }
 
-    public static Number readNumber (char[] chars, AccessibleInteger index) {
+    public static Number readNumber (SourceInput source) {
         double value = 0;
         int dividor = 1;
 
-        int localIndex = index.get();
-        while (true) {
-            int diff = chars[localIndex] - '0';
+        char c = source.get();
+        do {
+            int diff = c - '0';
             if (diff == -2) // is '.'
                 dividor = 10;
             else if (diff <= 9 && diff >= 0) { // is number
@@ -109,10 +109,9 @@ public class Utils {
             } else { // is other
                 break;
             }
-            localIndex++;
-        }
+            c = source.future();
+        } while (true);
 
-        index.set(localIndex);
         if (dividor == 1) {
             return (int) value;
         } else {

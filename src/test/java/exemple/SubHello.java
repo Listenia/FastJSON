@@ -1,8 +1,8 @@
 package exemple;
 
-import fun.listenia.fastjson.JSONSerializable;
-import fun.listenia.fastjson.extra.ObjectSerializer;
-import fun.listenia.fastjson.extra.Serializer;
+import fun.listenia.fastjson.extra.deserialize.Deserializer;
+import fun.listenia.fastjson.extra.serialize.JSONSerializable;
+import fun.listenia.fastjson.extra.serialize.ObjectSerializer;
 
 public class SubHello extends JSONSerializable {
 
@@ -15,5 +15,10 @@ public class SubHello extends JSONSerializable {
     @Override
     public void serialize (ObjectSerializer serializer) {
         serializer.put("content", content);
+    }
+
+    @Override
+    public void deserialize(Deserializer deserializer) {
+        /*content = deserializer.getString("content");*/
     }
 }

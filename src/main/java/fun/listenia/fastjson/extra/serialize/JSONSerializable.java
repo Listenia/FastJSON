@@ -1,13 +1,11 @@
-package fun.listenia.fastjson;
+package fun.listenia.fastjson.extra.serialize;
 
-import fun.listenia.fastjson.extra.ObjectSerializer;
-import fun.listenia.fastjson.extra.Serializer;
-import fun.listenia.fastjson.extra.Type;
+import fun.listenia.fastjson.extra.deserialize.Deserializer;
 
 public abstract class JSONSerializable {
 
     public abstract void serialize (ObjectSerializer serializer);
-    // public abstract void serialize (String json);
+    public abstract void deserialize (Deserializer deserializer);
 
 
     @Override
